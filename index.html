@@ -1346,6 +1346,11 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     </div>
   </div>
 
+  <!-- AUSNAHMEN-BLOCK (nur bei Vormiete / Modernisierung) -->
+  <div id="m3-ausnahme-block" class="card" style="margin-bottom:1rem;background:var(--amber-light);border-color:#F5C67A;display:none">
+    <div id="m3-ausnahme-content"><!-- wird per JS befüllt --></div>
+  </div>
+
   <!-- DEINE RECHTE -->
   <div class="card" style="margin-bottom:1rem;background:var(--teal-light);border-color:#9FE1CB">
     <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin-bottom:0.75rem">Was du nicht zu befürchten hast</div>
@@ -1421,6 +1426,11 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
       Die Mietpreisbremse ist Gesetz — aber sie setzt sich nicht von selbst durch. Wer seine Rechte nicht einfordert, zahlt weiter zu viel. Die Stadt wird gegen überhöhte Mieten nicht aktiv. Das müssen Mieter selbst tun.<br><br>
       Dieses Tool gibt dir alle Grundlagen dafür. Der nächste Schritt liegt bei dir.
     </div>
+  </div>
+
+  <!-- RECHTLICHER HINWEIS -->
+  <div style="background:var(--amber-light);border:1px solid #F5C67A;border-radius:12px;padding:14px 16px;font-size:13px;color:#633806;line-height:1.6;margin-bottom:1.25rem">
+    ⚖️ <strong>Rechtlicher Hinweis:</strong> Die Informationen auf dieser Seite geben eine allgemeine Übersicht und ersetzen keine individuelle Rechtsberatung. Die Verantwortung, die eigene Situation vollständig zu prüfen, liegt beim Nutzer. Bei konkreten Fragen wende dich an den <strong>Mieterverein Regio Freiburg e.V.</strong>, Marchstr. 1, 79106 Freiburg, Tel. 0761/20270-0, oder an einen auf Mietrecht spezialisierten Anwalt.
   </div>
 
   <!-- NAVIGATION -->
@@ -1654,7 +1664,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     </div><!-- /panel -->
 
     <div class="m4-legal-notice" style="margin-top:1rem">
-      ⚖️ <strong>Rechtlicher Hinweis:</strong> Dieser Generator erstellt Musterbriefe. Die Schreiben ersetzen keine individuelle Rechtsberatung. Vor dem Absenden empfehlen wir eine Prüfung durch den <strong>Mieterverein Regio Freiburg e.V.</strong>, Marchstr. 1, 79106 Freiburg, Tel. 0761/20270-0.
+      ⚖️ <strong>Rechtlicher Hinweis:</strong> Dieser Generator erstellt Musterbriefe auf Basis der eingegebenen Daten. Die Schreiben ersetzen keine individuelle Rechtsberatung. Die Verantwortung, die eigene Situation vollständig zu prüfen und die Schreiben auf Richtigkeit zu kontrollieren, liegt beim Nutzer. Vor dem Absenden empfehlen wir eine Prüfung durch den <strong>Mieterverein Regio Freiburg e.V.</strong>, Marchstr. 1, 79106 Freiburg, Tel. 0761/20270-0, oder einen auf Mietrecht spezialisierten Anwalt.
     </div>
 
     <div style="margin-top:1rem">
@@ -2160,9 +2170,16 @@ function rBuildResult(pfx, bm, items, wfl, sumPct, avg, minVal, maxVal, monatlic
     }
 
     ampelEl.className = 'ampel-block ' + cls + ' show';
+    var ampelBtn = '';
+    if (cls === 'gruen') {
+      ampelBtn = '<div style="margin-top:12px;font-size:13px;color:#3B6D11;line-height:1.55">Du musst aktuell nichts tun. Falls sich deine Miete oder der Mietspiegel ändert, kannst du die Berechnung jederzeit erneut durchführen.<br><br>' +
+        '<strong>Tipp:</strong> Auch wenn die Mietpreisbremse nicht verletzt ist — ein Auskunftsverlangen über die Vormiete ist jederzeit möglich und schadet nicht.</div>' +
+        '<div style="margin-top:14px"><button class="ampel-btn" onclick="goModul2()" style="background:#3B6D11">← Zurück zur Berechnung</button></div>';
+    } else {
+      ampelBtn = '<button class="ampel-btn" onclick="goZusammenfassung()">Vollständige Zusammenfassung &amp; Handlungsplan →</button>';
+    }
     ampelEl.innerHTML = '<div class="ampel-row"><div class="ampel-dot"></div><div class="ampel-titel">'+titel+'</div></div>' +
-      '<div class="ampel-body">'+body+'</div>' + zahlenHtml +
-      '<button class="ampel-btn" onclick="goZusammenfassung()">Vollständige Zusammenfassung &amp; Handlungsplan →</button>';
+      '<div class="ampel-body">'+body+'</div>' + zahlenHtml + ampelBtn;
   } else {
     ampelEl.className = 'ampel-block';
     ampelEl.innerHTML = '';
@@ -2995,6 +3012,87 @@ function m3Build() {
         '<span style="display:inline-block;font-size:10px;font-weight:500;padding:2px 9px;border-radius:20px;background:' + s.bg + ';color:var(--ink)">' + s.timing + '</span>' +
       '</div></div>';
   }).join('');
+
+  // ── Ausnahmen-Block (nur bei Vormiete oder Modernisierung) ──
+  var ausnahmeBlock = document.getElementById('m3-ausnahme-block');
+  var aus = M1.ausnahme;
+
+  if (aus === 'vormiete') {
+    ausnahmeBlock.style.display = 'block';
+    document.getElementById('m3-ausnahme-content').innerHTML =
+      '<div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--amber);margin-bottom:0.75rem">Besonderheit in deinem Fall: Vormiete mitgeteilt</div>' +
+      '<div style="display:flex;flex-direction:column;gap:12px">' +
+
+      '<div style="display:flex;gap:12px;align-items:flex-start">' +
+        '<div style="font-size:18px;flex-shrink:0">📋</div>' +
+        '<div>' +
+          '<div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px">Auskunftspflicht des Vermieters</div>' +
+          '<div style="font-size:13px;color:var(--muted);line-height:1.55">Der Vermieter ist nach § 556g Abs. 3 BGB verpflichtet, dir auf Verlangen Auskunft über das Vormietverhältnis zu erteilen — insbesondere über die Höhe der Vormiete. Das Auskunftsverlangen (Schreiben 1) schafft hier Klarheit.</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div style="display:flex;gap:12px;align-items:flex-start">' +
+        '<div style="font-size:18px;flex-shrink:0">⚖️</div>' +
+        '<div>' +
+          '<div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px">Vormiete muss selbst rechtens gewesen sein</div>' +
+          '<div style="font-size:13px;color:var(--muted);line-height:1.55">Eine höhere Vormiete rechtfertigt deine aktuelle Miete nur dann, wenn die Vormiete ihrerseits die Mietpreisbremse eingehalten hat. War auch die Vormiete überhöht, ist sie als Ausnahmetatbestand nicht schutzwürdig.</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div style="display:flex;gap:12px;align-items:flex-start">' +
+        '<div style="font-size:18px;flex-shrink:0">🔗</div>' +
+        '<div>' +
+          '<div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px">Vor-Vormiete als Maßstab (BGH 19.07.2023)</div>' +
+          '<div style="font-size:13px;color:var(--muted);line-height:1.55">War die Vormiete selbst überhöht, ist gemäß BGH-Urteil vom 19.07.2023 (VIII ZR 229/22) die <strong>Vor-Vormiete</strong> heranzuziehen — also die Miete des vorletzten Mieters. Diese Prüfung ist komplex und sollte mit anwaltlicher Unterstützung erfolgen.</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div style="background:var(--blue-light);border:1px solid var(--blue-mid);border-radius:10px;padding:12px 14px;font-size:13px;color:#0C447C;line-height:1.55">' +
+        '<strong>In jedem Fall:</strong> Stell die Rüge und das Auskunftsverlangen — unabhängig davon ob die Vormiete zulässig war oder nicht. Erst die Auskunft zeigt wie hoch die Vormiete tatsächlich war. Danach entscheidest du mit deinem Anwalt wie du weiter vorgehst.' +
+      '</div>' +
+
+      '</div>';
+
+  } else if (aus === 'modernisierung' || aus === 'vollmod') {
+    ausnahmeBlock.style.display = 'block';
+    document.getElementById('m3-ausnahme-content').innerHTML =
+      '<div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--amber);margin-bottom:0.75rem">Besonderheit in deinem Fall: Modernisierung mitgeteilt</div>' +
+      '<div style="display:flex;flex-direction:column;gap:12px">' +
+
+      '<div style="display:flex;gap:12px;align-items:flex-start">' +
+        '<div style="font-size:18px;flex-shrink:0">🔨</div>' +
+        '<div>' +
+          '<div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px">Vermieter muss Modernisierung nachweisen</div>' +
+          '<div style="font-size:13px;color:var(--muted);line-height:1.55">Der Vermieter trägt die Beweislast. Er muss nachweisen, dass die angegebenen Modernisierungsmaßnahmen tatsächlich durchgeführt wurden, § 555b BGB entsprechen und in den letzten 3 Jahren vor Mietbeginn stattfanden. Behauptungen ohne Belege reichen nicht.</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div style="display:flex;gap:12px;align-items:flex-start">' +
+        '<div style="font-size:18px;flex-shrink:0">📋</div>' +
+        '<div>' +
+          '<div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px">Auskunft über Art und Umfang verlangen</div>' +
+          '<div style="font-size:13px;color:var(--muted);line-height:1.55">Das Auskunftsverlangen (Schreiben 1) fordert den Vermieter auf, die Modernisierungsmaßnahmen konkret zu benennen. Nur dokumentierte, rechtlich anerkannte Maßnahmen nach § 556e Abs. 2 BGB können die Mietpreisbremse rechtfertigen.</div>' +
+        '</div>' +
+      '</div>' +
+
+      (aus === 'vollmod' ?
+      '<div style="display:flex;gap:12px;align-items:flex-start">' +
+        '<div style="font-size:18px;flex-shrink:0">🏗</div>' +
+        '<div>' +
+          '<div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px">Umfassende Modernisierung: besonders hohe Hürde</div>' +
+          '<div style="font-size:13px;color:var(--muted);line-height:1.55">Der Vermieter behauptet, die Wohnung sei so umfassend modernisiert worden, dass sie einem Neubau gleichkommt (§ 556f Satz 2 BGB). Das erfordert Modernisierungskosten von ca. einem Drittel der Neubaukosten — eine sehr hohe Hürde. Diese Behauptung sollte unbedingt anwaltlich geprüft werden.</div>' +
+        '</div>' +
+      '</div>' : '') +
+
+      '<div style="background:var(--blue-light);border:1px solid var(--blue-mid);border-radius:10px;padding:12px 14px;font-size:13px;color:#0C447C;line-height:1.55">' +
+        '<strong>In jedem Fall:</strong> Stell die Rüge und das Auskunftsverlangen — unabhängig davon ob die Modernisierung rechtlich standhält. Erst nach der Auskunft und einer anwaltlichen Einschätzung siehst du wie stark die Position des Vermieters wirklich ist.' +
+      '</div>' +
+
+      '</div>';
+
+  } else {
+    ausnahmeBlock.style.display = 'none';
+  }
 }
 
 // ─── QUELLEN ───────────────────────────────────────────
