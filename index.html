@@ -45,6 +45,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
 .step-dot.active { background: var(--blue); }
 .step-dot.done   { background: var(--teal); }
+.topbar-quellen-btn { margin-left: 12px; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--muted); transition: all 0.2s; }
+.topbar-quellen-btn:hover { background: var(--blue-light); border-color: var(--blue-mid); color: var(--blue); }
 
 /* ═══════════════════════════════════════════
    LAYOUT - MODULE 1 & 2
@@ -409,6 +411,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     <div class="step-dot"        id="dot3" title="Modul 3: Einordnung"></div>
     <div class="step-dot"        id="dot4" title="Modul 4: Schreiben"></div>
   </div>
+  <button class="topbar-quellen-btn" onclick="goQuellen()">📄 Quellen</button>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -641,7 +644,36 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     </div>
     <div class="btn-row">
       <button class="btn" onclick="m2ShowIntro()">Zurück</button>
-      <button class="btn primary" id="m2-btn-datum" onclick="m2ShowRechner()" disabled>Zum Mietrechner →</button>
+      <button class="btn primary" id="m2-btn-datum" onclick="m2ShowConfirm()" disabled>Weiter →</button>
+    </div>
+  </div>
+
+  <!-- BESTÄTIGUNG VOR MIETRECHNER -->
+  <div id="m2-block-confirm" class="card hidden">
+    <div class="section-label">Modul 2 · Schritt 2 von 2</div>
+    <div class="question">Gleich geht es zum Mietrechner.</div>
+    <div class="question-hint">Im nächsten Schritt gibst du die Merkmale deiner Wohnung ein — Wohnfläche, Baujahr, Ausstattung und Lage. Das dauert ca. 3–5 Minuten.</div>
+
+    <div class="summary-pill" id="m2-confirm-pill">Mietspiegel: <strong id="m2-confirm-ms">—</strong></div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1rem">
+      <div style="padding:12px 16px;background:var(--bg);font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em">Was du im Mietrechner eingeben wirst</div>
+      <div style="padding:0 16px">
+        <div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--ink)">📐 <strong>Wohnfläche</strong> in m²</div>
+        <div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--ink)">🏗 <strong>Baujahr</strong> des Gebäudes</div>
+        <div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--ink)">🛁 <strong>Ausstattung</strong> (Bad, Heizung, Küche, Keller …)</div>
+        <div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--ink)">📍 <strong>Stadtteil / Wohnlage</strong> in Freiburg</div>
+        <div style="padding:10px 0;font-size:13px;color:var(--ink)">💶 <strong>Deine aktuelle Nettokaltmiete</strong> in €/m²</div>
+      </div>
+    </div>
+
+    <div class="inline-alert blue show" style="display:block">
+      <strong>Tipp:</strong> Die Nettokaltmiete findest du im Mietvertrag — ohne Betriebskosten, Heizung oder Garage. Sie steht meist unter „§ 4 Miete" oder „Grundmiete".
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="m2ShowDatum()">Zurück</button>
+      <button class="btn primary" onclick="m2ShowRechner()">Jetzt zum Mietrechner →</button>
     </div>
   </div>
 
@@ -1276,10 +1308,126 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
   <!-- NAVIGATION -->
   <div style="display:flex;gap:10px;flex-wrap:wrap">
     <button class="btn" onclick="goModul2()">← Zurück zum Rechner</button>
-    <button class="btn primary" onclick="goModul4(null)" style="background:var(--teal);border-color:var(--teal)">✏️ Schreiben erstellen (Modul 4)</button>
+    <button class="btn primary" onclick="goModul3()" style="background:var(--teal);border-color:var(--teal)">Weiter → Schreiben vorbereiten</button>
     <button class="btn" onclick="window.print()" style="margin-left:auto">🖨 Drucken / PDF</button>
   </div>
   <div class="zs-print-hint">Diese Zusammenfassung kann ausgedruckt oder als PDF gespeichert werden (Browser: Drucken → Als PDF speichern).</div>
+
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     MODUL 3 – DEIN NÄCHSTER SCHRITT
+═══════════════════════════════════════════════════════ -->
+<div id="view-modul3" class="hidden">
+<div class="outer" style="max-width:700px">
+
+  <!-- HEADER -->
+  <div style="margin-bottom:1.5rem">
+    <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin-bottom:0.5rem">Dein nächster Schritt</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--ink);margin-bottom:0.5rem" id="m3-headline">So geht es jetzt weiter.</div>
+    <div style="font-size:14px;color:var(--muted);line-height:1.6" id="m3-subline">Die Berechnung ist fertig. Jetzt geht es darum, deine Rechte geltend zu machen.</div>
+  </div>
+
+  <!-- DEIN FALL -->
+  <div class="card" style="margin-bottom:1rem" id="m3-fall-card">
+    <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);margin-bottom:0.75rem">Dein Fall auf einen Blick</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="m3-fall-grid">
+      <!-- wird per JS befüllt -->
+    </div>
+  </div>
+
+  <!-- DIE DREI SCHREIBEN -->
+  <div class="card" style="margin-bottom:1rem">
+    <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);margin-bottom:0.75rem">Die drei Schreiben — was sie bewirken</div>
+    <div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden" id="m3-schreiben-list">
+      <!-- wird per JS befüllt -->
+    </div>
+  </div>
+
+  <!-- DEINE RECHTE -->
+  <div class="card" style="margin-bottom:1rem;background:var(--teal-light);border-color:#9FE1CB">
+    <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin-bottom:0.75rem">Was du nicht zu befürchten hast</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="font-size:18px;flex-shrink:0">🔒</div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px">Dein Mietvertrag ist sicher</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.55">Eine Rüge nach §§ 556d ff. BGB berechtigt den Vermieter nicht zur Kündigung. Unbefristete Mietverträge genießen vollen gesetzlichen Kündigungsschutz — daran ändert die Mietpreisbremse nichts.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="font-size:18px;flex-shrink:0">⚖️</div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px">Kein Gericht notwendig</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.55">Die Schreiben sind kein Klageeinreichen — sie sind formelle Mitteilungen, die deine Rechte sichern. Aus einer Rüge folgt nicht automatisch ein Gerichtsverfahren.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="font-size:18px;flex-shrink:0">📋</div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px">Du musst nichts beweisen</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.55">Die Beweislast liegt beim Vermieter. Er muss nachweisen, dass ein Ausnahmetatbestand vorliegt — nicht du. Die Mietspiegel-Berechnung reicht als Grundlage.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIE ES WEITERGEHT -->
+  <div class="card" style="margin-bottom:1rem">
+    <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);margin-bottom:0.75rem">Wie es weitergeht</div>
+    <div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden">
+
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-bottom:1px solid var(--border)">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px">Schreiben erstellen und per Einschreiben senden</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.55">Modul 4 erstellt alle drei Schreiben für dich. Sende sie per <strong>Einwurfeinschreiben</strong> — der Einlieferungsbeleg ist dein Nachweis des Zugangs.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-bottom:1px solid var(--border)">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px">Vermieter hat 2–3 Wochen Zeit zu reagieren</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.55">Im besten Fall kommt er der Forderung nach — die Miete wird gesenkt, überzahlte Beträge werden erstattet. Das passiert öfter als man denkt.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-bottom:1px solid var(--border)">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--amber);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px">Keine Reaktion? Dann zum Anwalt</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.55">Wenn der Vermieter nicht reagiert oder ablehnt, empfehlen wir eine Beratung bei einem auf <strong>Mietrecht spezialisierten Anwalt</strong>. Eine Erstberatung kostet ca. 230–280 €. Bei einer Miete die 100 € pro Monat zu hoch ist, ist das nach 3 Monaten refinanziert.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 16px">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--teal);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">💡</div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px">Generell empfehlenswert: Mieterverein</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.55"><strong>Mieterverein Regio Freiburg e.V.</strong>, Marchstr. 1, 79106 Freiburg, Tel. 0761/20270-0. Mitglieder erhalten rechtliche Beratung zu günstigeren Konditionen.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ABSCHLUSS / POSITION -->
+  <div style="background:var(--ink);border-radius:16px;padding:1.5rem 1.75rem;margin-bottom:1.5rem">
+    <div style="font-family:'DM Serif Display',serif;font-size:20px;color:#fff;margin-bottom:0.75rem;line-height:1.3">Deine Miete ist dein Recht.</div>
+    <div style="font-size:13px;color:#ccc;line-height:1.7">
+      Die Mietpreisbremse ist Gesetz — aber sie setzt sich nicht von selbst durch. Wer seine Rechte nicht einfordert, zahlt weiter zu viel. Die Stadt wird gegen überhöhte Mieten nicht aktiv. Das müssen Mieter selbst tun.<br><br>
+      Dieses Tool gibt dir alle Grundlagen dafür. Der nächste Schritt liegt bei dir.
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:2rem">
+    <button class="btn" onclick="goZusammenfassung()">← Zurück zur Zusammenfassung</button>
+    <button class="btn primary" onclick="goModul4(null)" style="background:var(--teal);border-color:var(--teal)">✏️ Schreiben erstellen (Modul 4) →</button>
+  </div>
 
 </div>
 </div>
@@ -1543,7 +1691,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 var LAST_RESULT = null; // wird von rBuildResult befüllt
 
 // ─── GLOBALE NAVIGATION ────────────────────────────────
-var VIEWS = ['view-modul1','view-modul2','view-r1','view-r2','view-r3','view-r4','view-r5','view-r6','view-zusammenfassung','view-modul4'];
+var VIEWS = ['view-modul1','view-modul2','view-r1','view-r2','view-r3','view-r4','view-r5','view-r6','view-zusammenfassung','view-modul3','view-modul4','view-quellen'];
 
 function showView(id) {
   VIEWS.forEach(function(v){ document.getElementById(v).classList.add('hidden'); });
@@ -1566,6 +1714,16 @@ function goZusammenfassung() {
   document.getElementById('dot4').className = 'step-dot';
   showView('view-zusammenfassung');
   zsBuild();
+}
+
+function goModul3() {
+  document.getElementById('topbar-badge').textContent = 'Dein Nächster Schritt';
+  document.getElementById('dot1').className = 'step-dot done';
+  document.getElementById('dot2').className = 'step-dot done';
+  document.getElementById('dot3').className = 'step-dot done';
+  document.getElementById('dot4').className = 'step-dot active';
+  showView('view-modul3');
+  m3Build();
 }
 
 function goModul4(startTab) {
@@ -1597,6 +1755,7 @@ function goModul2() {
   showView('view-modul2');
   document.getElementById('m2-block-intro').classList.remove('hidden');
   document.getElementById('m2-block-datum').classList.add('hidden');
+  document.getElementById('m2-block-confirm').classList.add('hidden');
 }
 
 function showRechner(viewId) {
@@ -1850,10 +2009,24 @@ var M2 = { monat: 0, jahr: 0 };
 function m2ShowIntro() {
   document.getElementById('m2-block-intro').classList.remove('hidden');
   document.getElementById('m2-block-datum').classList.add('hidden');
+  document.getElementById('m2-block-confirm').classList.add('hidden');
 }
 function m2ShowDatum() {
   document.getElementById('m2-block-intro').classList.add('hidden');
   document.getElementById('m2-block-datum').classList.remove('hidden');
+  document.getElementById('m2-block-confirm').classList.add('hidden');
+}
+function m2ShowConfirm() {
+  var ms = getMietspiegel(M2.monat, M2.jahr);
+  if (!ms) return;
+  document.getElementById('m2-confirm-ms').textContent = ms.label;
+  document.getElementById('m2-block-datum').classList.add('hidden');
+  document.getElementById('m2-block-confirm').classList.remove('hidden');
+}
+function m2ShowRechner() {
+  var ms = getMietspiegel(M2.monat, M2.jahr);
+  if (!ms) return;
+  showRechner(ms.view);
 }
 
 function m2OnDateChange() {
@@ -2355,8 +2528,7 @@ function zsBuild() {
   }
 
   document.getElementById('zs-steps').innerHTML = steps.map(function(s, i) {
-    var btn = s.m4 ? ' <button onclick="goModul4(\''+s.m4+'\')" style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--blue-mid);background:var(--blue-light);color:var(--blue);font-family:\'DM Sans\',sans-serif">✏️ Brief erstellen</button>' : '';
-    return '<div class="zs-step"><div class="zs-step-num">'+(i+1)+'</div><div><div class="zs-step-title">'+s.t+'</div><div class="zs-step-desc">'+s.d+'</div><span class="zs-step-tag">'+s.tag+'</span>'+btn+'</div></div>';
+    return '<div class="zs-step"><div class="zs-step-num">'+(i+1)+'</div><div><div class="zs-step-title">'+s.t+'</div><div class="zs-step-desc">'+s.d+'</div><span class="zs-step-tag">'+s.tag+'</span></div></div>';
   }).join('');
 
   // Hinweis
@@ -2710,8 +2882,256 @@ function m4CopyLetter() {
   });
 }
 
+// ═══════════════════════════════════════════════════════
+// MODUL 3 – DEIN NÄCHSTER SCHRITT
+// ═══════════════════════════════════════════════════════
+
+function m3Build() {
+  var r  = LAST_RESULT;
+  var rs = getRechtsstufe(M1.monat || M2.monat, M1.jahr || M2.jahr);
+  var ms = getMietspiegel(M2.monat || M1.monat, M2.jahr || M1.jahr);
+
+  // ── Headline je nach Situation ──
+  var ueber = r && r.aktMiete > r.bremse;
+  if (ueber) {
+    document.getElementById('m3-headline').textContent = 'So machst du dein Recht geltend.';
+    document.getElementById('m3-subline').textContent  = 'Deine Miete übersteigt die gesetzliche Grenze. Du hast klare Ansprüche — hier erfährst du wie du sie durchsetzt.';
+  } else {
+    document.getElementById('m3-headline').textContent = 'So geht es jetzt weiter.';
+    document.getElementById('m3-subline').textContent  = 'Die Berechnung ist fertig. Auch wenn deine Miete im zulässigen Bereich liegt, lohnt es sich, die nächsten Schritte zu kennen.';
+  }
+
+  // ── Fall-Grid ──
+  var fallItems = [];
+  if (ms) fallItems.push({ label: 'Mietspiegel', value: ms.label || ms.name });
+  if (rs) fallItems.push({ label: 'Rechtsstufe', value: 'Stufe ' + rs });
+  if (r && r.avg)      fallItems.push({ label: 'Vergleichsmiete', value: r.avg.toFixed(2) + ' €/m²' });
+  if (r && r.bremse)   fallItems.push({ label: 'Grenze (+ 10 %)', value: r.bremse.toFixed(2) + ' €/m²' });
+  if (r && r.aktMiete) fallItems.push({ label: 'Deine Miete', value: r.aktMiete.toFixed(2) + ' €/m²' });
+  if (r && ueber)      fallItems.push({ label: 'Zu viel pro Monat', value: ((r.aktMiete - r.bremse) * r.wfl).toFixed(0) + ' €' });
+
+  document.getElementById('m3-fall-grid').innerHTML = fallItems.map(function(i) {
+    return '<div style="background:var(--bg);border-radius:10px;padding:12px 14px">' +
+      '<div style="font-size:11px;color:var(--muted);margin-bottom:3px">' + i.label + '</div>' +
+      '<div style="font-size:15px;font-weight:500;color:var(--ink)">' + i.value + '</div></div>';
+  }).join('');
+
+  // ── Schreiben-Liste je nach Rechtsstufe ──
+  var schreiben = [];
+
+  if (rs === 1) {
+    schreiben = [
+      {
+        nr: '1', titel: 'Auskunftsverlangen (§ 556g Abs. 3 BGB)',
+        farbe: 'var(--blue)', bg: 'var(--blue-light)',
+        wirkung: 'Fordert den Vermieter auf, die Höhe der Vormiete und etwaige Ausnahmen offenzulegen. Bei Rechtsstufe 1 besonders wichtig: Da es keine gesetzliche Mitteilungspflicht gab, kann der Vermieter sich auf eine höhere Vormiete berufen — das Auskunftsverlangen zwingt ihn zur Transparenz.',
+        timing: 'Erster Schritt — sofort senden'
+      },
+      {
+        nr: '2', titel: 'Qualifizierte Rüge (§ 556g Abs. 2 BGB)',
+        farbe: 'var(--teal)', bg: 'var(--teal-light)',
+        wirkung: 'Die Rüge ist die entscheidende Handlung: Ab dem Monat nach ihrem Zugang kannst du die Differenz zwischen deiner Miete und der Mietpreisbremsen-Grenze zurückfordern. Die Rüge enthält die vollständige Mietspiegel-Berechnung — dieses Tool hat sie bereits für dich erstellt.',
+        timing: 'Kernstück — per Einschreiben senden'
+      },
+      {
+        nr: '3', titel: 'Zahlungsvorbehalt',
+        farbe: 'var(--amber)', bg: 'var(--amber-light)',
+        wirkung: 'Erklärt dem Vermieter schriftlich, dass du die Miete ab sofort nur noch unter dem ausdrücklichen Vorbehalt der Rückforderung zahlst. Sichert deine Position für alle zukünftigen Zahlungen.',
+        timing: 'Gleichzeitig oder kurz nach der Rüge'
+      }
+    ];
+  } else if (rs === 2) {
+    schreiben = [
+      {
+        nr: '1', titel: 'Auskunftsverlangen (§ 556g Abs. 3 BGB)',
+        farbe: 'var(--blue)', bg: 'var(--blue-light)',
+        wirkung: 'Fordert Auskunft über Vormiete und Ausnahmen. Ab 01.01.2019 gilt: Hat der Vermieter dich nicht schriftlich über Ausnahmen informiert, kann er sich darauf grundsätzlich nicht berufen — das Auskunftsverlangen legt das offen.',
+        timing: 'Optional — empfohlen als erster Schritt'
+      },
+      {
+        nr: '2', titel: 'Einfache Rüge (§ 556g Abs. 2 BGB)',
+        farbe: 'var(--teal)', bg: 'var(--teal-light)',
+        wirkung: 'Bei Rechtsstufe 2 reicht eine einfache Rüge ohne vollständige Begründung. Ab dem Folgemonat nach Zugang kannst du die Überzahlung zurückfordern. Kein ausführlicher Nachweis nötig — kurz und klar genügt.',
+        timing: 'Kernstück — so früh wie möglich senden'
+      },
+      {
+        nr: '3', titel: 'Zahlungsvorbehalt',
+        farbe: 'var(--amber)', bg: 'var(--amber-light)',
+        wirkung: 'Schriftliche Erklärung dass du die Miete ab sofort unter Vorbehalt zahlst. Schützt deine Rückforderungsansprüche für alle künftigen Zahlungen.',
+        timing: 'Gleichzeitig mit der Rüge'
+      }
+    ];
+  } else {
+    // rs === 3 oder kein rs
+    schreiben = [
+      {
+        nr: '1', titel: 'Auskunftsverlangen (§ 556g Abs. 3 BGB)',
+        farbe: 'var(--blue)', bg: 'var(--blue-light)',
+        wirkung: 'Legt Vormiete und Ausnahmen offen. Bei Rechtsstufe 3 gilt: Hat der Vermieter keine schriftliche Mitteilung über Ausnahmen gemacht, kann er sich nicht darauf berufen — eine sehr starke Ausgangsposition.',
+        timing: 'Empfohlen als erster Schritt'
+      },
+      {
+        nr: '2', titel: 'Einfache Rüge (§ 556g Abs. 2 BGB)',
+        farbe: 'var(--teal)', bg: 'var(--teal-light)',
+        wirkung: 'Das Herzstück: Wenn du innerhalb von 30 Monaten nach Mietbeginn rügst, kannst du die gesamte seit Tag 1 zu viel gezahlte Miete zurückfordern — rückwirkend bis zum ersten Monat. Je früher die Rüge, desto mehr Geld.',
+        timing: '⚠ Dringend — 30-Monats-Frist beachten'
+      },
+      {
+        nr: '3', titel: 'Zahlungsvorbehalt',
+        farbe: 'var(--amber)', bg: 'var(--amber-light)',
+        wirkung: 'Sichert alle ab sofort geleisteten Zahlungen als rückforderbar ab. Wichtig auch für vergangene Monate — die Rückforderung wird so wasserdicht dokumentiert.',
+        timing: 'Gleichzeitig mit der Rüge'
+      }
+    ];
+  }
+
+  document.getElementById('m3-schreiben-list').innerHTML = schreiben.map(function(s, idx) {
+    var border = idx < schreiben.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
+    return '<div style="display:flex;gap:14px;align-items:flex-start;padding:14px 16px;' + border + '">' +
+      '<div style="width:28px;height:28px;border-radius:50%;background:' + s.farbe + ';color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + s.nr + '</div>' +
+      '<div style="flex:1">' +
+        '<div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px">' + s.titel + '</div>' +
+        '<div style="font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:5px">' + s.wirkung + '</div>' +
+        '<span style="display:inline-block;font-size:10px;font-weight:500;padding:2px 9px;border-radius:20px;background:' + s.bg + ';color:var(--ink)">' + s.timing + '</span>' +
+      '</div></div>';
+  }).join('');
+}
+
+// ─── QUELLEN ───────────────────────────────────────────
+function goQuellen() {
+  document.getElementById('topbar-badge').textContent = 'Quellen';
+  showView('view-quellen');
+  window.scrollTo(0,0);
+}
+
 // ─── INITIALISIERUNG ───────────────────────────────────
 r1calc(); r2calc(); r3calc(); r4calc(); r5calc(); r6calc();
 </script>
+
+<!-- ═══════════════════════════════════════════════════════
+     QUELLEN & DOKUMENTE
+═══════════════════════════════════════════════════════ -->
+<div id="view-quellen" class="hidden">
+<div class="outer" style="max-width:760px">
+
+  <div style="margin-bottom:1.5rem">
+    <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem">Quellen & Dokumente</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--ink);margin-bottom:0.5rem">Rechtliche Grundlagen & Mietspiegel</div>
+    <div style="font-size:14px;color:var(--muted);line-height:1.6">Alle Dokumente die diesem Tool zugrunde liegen — zum Lesen, Herunterladen und Nachschlagen.</div>
+  </div>
+
+  <!-- RECHTSGRUNDLAGEN -->
+  <div class="card" style="margin-bottom:1rem">
+    <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin-bottom:0.75rem">Rechtliche Grundlage</div>
+    <div style="display:flex;align-items:flex-start;gap:16px">
+      <div style="font-size:28px;flex-shrink:0">⚖️</div>
+      <div style="flex:1">
+        <div style="font-size:16px;font-weight:500;color:var(--ink);margin-bottom:4px">Mietpreisbremse Freiburg – Rechtliche Grundlagen</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:1rem">Zusammenfassung der gesetzlichen Grundlagen: §§ 556d–556g BGB, MietBgVO BW, Rechtsstufen 1–3, Ausnahmetatbestände, BGH-Rechtsprechung.</div>
+        <a href="Mietpreisbremse_Freiburg_Rechtliche_Grundlagen.pdf" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:500;text-decoration:none;font-family:'DM Sans',sans-serif;transition:opacity 0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">📄 PDF öffnen</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MIETSPIEGEL -->
+  <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:1.5rem 0 0.75rem">Qualifizierte Mietspiegel der Stadt Freiburg im Breisgau</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:1rem;line-height:1.5">Quelle: Stadt Freiburg im Breisgau, Amt für Wohnraumentwicklung und Vermessung. Alle Mietspiegel sind qualifizierte Mietspiegel nach § 558d BGB.</div>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+
+    <div class="card" style="padding:1.25rem;margin-bottom:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:15px;font-weight:500;color:var(--ink)">Mietspiegel 2025 – 2026</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Gültig 01.01.2025 – 31.12.2026 · Neuerstellung · EMA-Institut Regensburg</div>
+          <div style="font-size:11px;color:var(--teal);font-weight:500;margin-top:4px">Aktuell gültig</div>
+        </div>
+        <a href="Mietspiegel_2025_2026.pdf" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:500;text-decoration:none;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:opacity 0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">📄 PDF öffnen</a>
+      </div>
+    </div>
+
+    <div class="card" style="padding:1.25rem;margin-bottom:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:15px;font-weight:500;color:var(--ink)">Mietspiegel 2023 – 2024</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Gültig 01.01.2023 – 31.12.2024 · Fortschreibung · FUB iGES Hamburg</div>
+        </div>
+        <a href="Mietspiegel_2023_2024.pdf" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;background:var(--blue);color:#fff;font-size:13px;font-weight:500;text-decoration:none;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:opacity 0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">📄 PDF öffnen</a>
+      </div>
+    </div>
+
+    <div class="card" style="padding:1.25rem;margin-bottom:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:15px;font-weight:500;color:var(--ink)">Mietspiegel 2021 – 2022</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Gültig 01.01.2021 – 31.12.2022 · Neuerstellung · Institut F+B Hamburg</div>
+        </div>
+        <a href="Mietspiegel_2021_2022.pdf" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;background:var(--blue);color:#fff;font-size:13px;font-weight:500;text-decoration:none;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:opacity 0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">📄 PDF öffnen</a>
+      </div>
+    </div>
+
+    <div class="card" style="padding:1.25rem;margin-bottom:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:15px;font-weight:500;color:var(--ink)">Mietspiegel 2019 – 2020</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Gültig 01.01.2019 – 31.12.2020 · Fortschreibung · GEWOS Hamburg</div>
+        </div>
+        <a href="Mietspiegel_2019_2020.pdf" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;background:var(--blue);color:#fff;font-size:13px;font-weight:500;text-decoration:none;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:opacity 0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">📄 PDF öffnen</a>
+      </div>
+    </div>
+
+    <div class="card" style="padding:1.25rem;margin-bottom:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:15px;font-weight:500;color:var(--ink)">Mietspiegel 2017 – 2018</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Gültig 01.01.2017 – 31.12.2018 · Neuerstellung · GEWOS Hamburg</div>
+        </div>
+        <a href="Mietspiegel_2017_2018.pdf" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;background:var(--blue);color:#fff;font-size:13px;font-weight:500;text-decoration:none;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:opacity 0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">📄 PDF öffnen</a>
+      </div>
+    </div>
+
+    <div class="card" style="padding:1.25rem;margin-bottom:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:15px;font-weight:500;color:var(--ink)">Mietspiegel 2015 – 2016</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Gültig 01.11.2015 – 31.12.2016 · Erster Mietspiegel unter Mietpreisbremse · GEWOS Hamburg</div>
+        </div>
+        <a href="Mietspiegel_2015_2016.pdf" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;background:var(--blue);color:#fff;font-size:13px;font-weight:500;text-decoration:none;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:opacity 0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">📄 PDF öffnen</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GESETZLICHE GRUNDLAGEN -->
+  <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:1.5rem 0 0.75rem">Gesetzliche Grundlagen (extern)</div>
+  <div class="card" style="padding:1.25rem;margin-bottom:0">
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+        <div><span style="font-weight:500">§§ 556d–556g BGB</span> <span style="color:var(--muted)">— Mietpreisbremse</span></div>
+        <a href="https://www.gesetze-im-internet.de/bgb/__556d.html" target="_blank" style="font-size:12px;color:var(--blue);text-decoration:none;font-weight:500">→ gesetze-im-internet.de</a>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+        <div><span style="font-weight:500">MietBgVO Baden-Württemberg</span> <span style="color:var(--muted)">— Verordnung vom 29.09.2015</span></div>
+        <a href="https://www.landesrecht-bw.de" target="_blank" style="font-size:12px;color:var(--blue);text-decoration:none;font-weight:500">→ landesrecht-bw.de</a>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div><span style="font-weight:500">BGH-Urteil VIII ZR 229/22</span> <span style="color:var(--muted)">— Vormiete-Kette, 19.07.2023</span></div>
+        <a href="https://www.bundesgerichtshof.de" target="_blank" style="font-size:12px;color:var(--blue);text-decoration:none;font-weight:500">→ bundesgerichtshof.de</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HINWEIS -->
+  <div style="background:var(--amber-light);border:1px solid #F5C67A;border-radius:12px;padding:14px 16px;font-size:13px;color:#633806;line-height:1.6;margin-top:1.25rem">
+    ⚖️ <strong>Hinweis:</strong> Dieses Tool und die verlinkten Dokumente ersetzen keine individuelle Rechtsberatung. Bei konkreten Fragen wende dich an den <strong>Mieterverein Regio Freiburg e.V.</strong>, Marchstr. 1, 79106 Freiburg, Tel. 0761/20270-0.
+  </div>
+
+  <div style="margin-top:1.5rem">
+    <button class="btn" onclick="goModul1()">← Zurück zum Tool</button>
+  </div>
+
+</div>
+</div>
+
 </body>
 </html>
